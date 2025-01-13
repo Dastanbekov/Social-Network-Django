@@ -1,0 +1,5 @@
+#ignoring all sqlite files 
+*.sqlite3
+
+#ignore python cache
+__pycache__/
