@@ -12,4 +12,4 @@ def index(request):
     return render(request,template_name='main/index.html',context=context)
 
 def about(request):
-    return HttpResponse('About us')
+    return render(request,template_name='main/about.html')
