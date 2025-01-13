@@ -1,11 +1,15 @@
 from django.shortcuts import render
-
 from django.http import HttpResponse
+
+from datetime import datetime
 # Create your views here.
 
 def index(request):
-    return HttpResponse('Hello!')
+    context = {
+        'year': datetime.now().year
+    }
 
-def about_us(request):
+    return render(request,template_name='main/index.html',context=context)
+
+def about(request):
     return HttpResponse('About us')
-
