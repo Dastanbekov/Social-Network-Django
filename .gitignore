@@ -3,3 +3,6 @@
 
 #ignore python cache
 __pycache__/
+
+#ignore todo file
+todo

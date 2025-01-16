@@ -1,20 +1,33 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render,redirect
 from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy,reverse
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages,auth
 
-from .forms import UserRegistrationForm
+from.utils import RedirectAuthUserMixin
+from .forms import UserRegistrationForm,UserLoginForm
 # Create your views here.
 
-def login(request):
-    return HttpResponse('login')
 
-def logout(request):
-    return HttpResponse('logout')
+class UserLoginView(RedirectAuthUserMixin,LoginView):
+    template_name = 'users/login.html'
+    authentication_form = UserLoginForm   
+    
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('main:main')
+        return super().dispatch(request, *args, **kwargs)
 
-class UserCreationView(CreateView):
+class UserCreationView(RedirectAuthUserMixin,CreateView):
     model = User
     template_name = 'users/reg.html'
     form_class = UserRegistrationForm
-    success_url = reverse_lazy('main:main')
+    success_url = reverse_lazy('users:login')
+
+@login_required
+def logout(request):
+    messages.success(request,f'{request.user.username} - вы вышли из Аккаунта') 
+    auth.logout(request)
+    return redirect(reverse('main:main'))
