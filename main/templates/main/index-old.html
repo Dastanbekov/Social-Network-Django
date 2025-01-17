@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home | Social Network
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to MySocial!</h1>
+    <p class="lead">Connect with friends, share your moments, and discover something new.</p>
+    <hr class="my-4">
+    {% if user.is_authenticated %}
+    <p>Welcome Back!</p>
+    {% else %}
+    <p>Start exploring now by signing up or logging in!</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'users:register' %}" role="button">Sign Up</a>
+    <a class="btn btn-outline-primary btn-lg" href="{% url 'users:login' %}" role="button">Login</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,14 +1,12 @@
 class NavbarMixin:
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)  # Наследуем существующий контекст
+        context = super().get_context_data(**kwargs) 
         context['menu'] = self.get_navbar_context()
         return context
 
     def get_navbar_context(self):
-        # Генерируем меню в зависимости от аутентификации пользователя
         menu = [
             {'title': 'Home', 'url_name': 'main:main'},
-            {'title': 'About', 'url_name': 'main:about'},
         ]
 
         if self.request.user.is_authenticated:

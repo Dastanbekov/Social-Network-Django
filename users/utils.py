@@ -1,8 +1,10 @@
 from django.shortcuts import redirect
 
-class RedirectAuthUserMixin:
+class AnonymousOnlyMixin:
+    """
+    Для запрета доступа аутентифицированным пользователям.
+    """
     def dispatch(self, request, *args, **kwargs):
-        redirect_url = 'users:login'
         if request.user.is_authenticated:
-            return redirect(redirect_url)
+            return redirect('main:main')
         return super().dispatch(request, *args, **kwargs)

@@ -10,14 +10,15 @@ from django.views.generic import DetailView
 
 from .forms import UserRegistrationForm,UserLoginForm
 from main.utils import NavbarMixin
+from .utils import AnonymousOnlyMixin
 # Create your views here.
 
 
-class UserLoginView(NavbarMixin,LoginView):
+class UserLoginView(AnonymousOnlyMixin,NavbarMixin,LoginView):
     template_name = 'users/login.html'
     authentication_form = UserLoginForm   
 
-class UserCreationView(NavbarMixin,CreateView):
+class UserCreationView(AnonymousOnlyMixin,NavbarMixin,CreateView):
     model = User
     template_name = 'users/reg.html'
     form_class = UserRegistrationForm
