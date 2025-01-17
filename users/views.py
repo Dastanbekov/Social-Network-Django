@@ -11,10 +11,11 @@ from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from.utils import RedirectAuthUserMixin
 from .forms import UserRegistrationForm,UserLoginForm
+from main.utils import NavbarMixin
 # Create your views here.
 
 
-class UserLoginView(RedirectAuthUserMixin,LoginView):
+class UserLoginView(RedirectAuthUserMixin,NavbarMixin,LoginView):
     template_name = 'users/login.html'
     authentication_form = UserLoginForm   
     
@@ -23,13 +24,13 @@ class UserLoginView(RedirectAuthUserMixin,LoginView):
             return redirect('main:main')
         return super().dispatch(request, *args, **kwargs)
 
-class UserCreationView(RedirectAuthUserMixin,CreateView):
+class UserCreationView(RedirectAuthUserMixin,NavbarMixin,CreateView):
     model = User
     template_name = 'users/reg.html'
     form_class = UserRegistrationForm
     success_url = reverse_lazy('users:login')
 
-class UserProfileView(LoginRequiredMixin,DetailView):
+class UserProfileView(LoginRequiredMixin,NavbarMixin,DetailView):
     template_name = 'users/profile.html'
     model = User
     def get_object(self):
