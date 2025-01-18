@@ -27,9 +27,20 @@ class UserCreationView(AnonymousOnlyMixin,NavbarMixin,CreateView):
 class UserProfileView(NavbarMixin,DetailView):
     template_name = 'users/profile.html'
     model = User
-    def get_object(self):
-        return get_object_or_404(User,pk = self.request.user.pk)
 
+    #берем юзернейм из адреснной строки
+    def get_object(self):
+        username = self.kwargs.get('username')  
+        user = get_object_or_404(User, username=username)
+        return user
+
+    #определяем шаблон для пользователя
+    def get_template_names(self):
+        user = self.get_object()
+        if self.request.user == user:
+            return ['users/my_profile.html'] 
+        else:
+            return ['users/profile.html'] 
 
 @login_required
 def logout(request):

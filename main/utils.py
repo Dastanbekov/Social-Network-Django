@@ -11,7 +11,7 @@ class NavbarMixin:
 
         if self.request.user.is_authenticated:
             menu += [
-                {'title': 'Profile', 'url_name': 'users:profile'},
+                {'title': 'Profile', 'url_name': 'users:profile','kwargs':{'username':self.request.user.username}},
                 {'title': 'Logout', 'url_name': 'users:logout'},
             ]
         else:
