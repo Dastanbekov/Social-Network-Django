@@ -10,7 +10,7 @@
 <p>Подписчики: {{ followers_count }}</p>
 <p>Подписки: {{ following_count }}</p>
 
-{% if is_following %}
+{% comment %} {% if is_following %}
     <form action="{% url 'users:unfollow_user' username=user.username %}" method="post">
         {% csrf_token %}
         <button type="submit">Отписаться</button>
@@ -20,5 +20,5 @@
         {% csrf_token %}
         <button type="submit">Подписаться</button>
     </form>
-{% endif %}
+{% endif %} {% endcomment %}
 {% endblock %}
