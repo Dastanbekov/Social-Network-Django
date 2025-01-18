@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
-
+from django.views.generic.detail import DetailView
 from .models import Post
 from .forms import PostForm
 from main.utils import NavbarMixin
@@ -18,3 +18,8 @@ class PostCreateView(NavbarMixin,CreateView):
         form.instance.author = self.request.user    
         return super().form_valid(form)
     
+
+class PostDetailView(NavbarMixin,DetailView):
+    model = Post
+    template_name = 'content/post_detail.html'
+    context_object_name = 'post'
