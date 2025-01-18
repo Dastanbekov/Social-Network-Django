@@ -5,39 +5,25 @@
 {% block content %}
 <div class="row">
     <div class="col-md-8">
-        <!-- Первый пост -->
+        {% for post in posts %}
         <div class="card mb-4">
-            <img src="https://www.google.com/search?q=question+mark+image&tbm=isch" class="card-img-top" alt="Question Mark">
+            <img 
+                src="{{ post.image_url|default:'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=' }}" 
+                class="card-img-top" 
+                alt="{{ post.title }}"
+            >
             <div class="card-body">
-                <h5 class="card-title">Первый пост</h5>
-                <p class="card-text">Здесь будет описание поста. Этот пост может содержать любой текст, и позже можно будет добавлять динамичные элементы с помощью Python/Django.</p>
-                <p class="text-muted">Posted on 2025-01-17</p>
-                <a href="#" class="btn btn-primary">Читать далее</a>
+                <h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">
+                    {{ post.content|truncatewords:10 }}
+                </p>
+                <p class="text-muted">Опубликовано: {{ post.created_at|date:"d M Y" }}</p>
+                <a href="{% url 'content:post' post.slug %}" class="btn btn-primary">Читать далее</a>
             </div>
         </div>
-
-        <!-- Второй пост -->
-        <div class="card mb-4">
-            <img src="https://www.google.com/search?q=question+mark+image&tbm=isch" class="card-img-top" alt="Question Mark">
-            <div class="card-body">
-                <h5 class="card-title">Второй пост</h5>
-                <p class="card-text">Вот описание второго поста. Вы можете заменить это содержимое на конкретные данные о постах и их контент.</p>
-                <p class="text-muted">Posted on 2025-01-16</p>
-                <a href="#" class="btn btn-primary">Читать далее</a>
-            </div>
-        </div>
-
-        <!-- Третий пост -->
-        <div class="card mb-4">
-            <img src="https://www.google.com/search?q=question+mark+image&tbm=isch" class="card-img-top" alt="Question Mark">
-            <div class="card-body">
-                <h5 class="card-title">Третий пост</h5>
-                <p class="card-text">Это описание третьего поста. Добавьте сюда любые данные, которые вам будут необходимы для отображения.</p>
-                <p class="text-muted">Posted on 2025-01-15</p>
-                <a href="#" class="btn btn-primary">Читать далее</a>
-            </div>
-        </div>
-
+        {% empty %}
+        <p>Нет публикаций</p>
+        {% endfor %}
     </div>
 
     <!-- Sidebar -->
