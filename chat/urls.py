@@ -11,7 +11,12 @@ app_name = 'chat'
 #     path('user/',views.chat,name='chat')
 # ]
 
+# urlpatterns = [
+#     path('<int:chat_id>/', views.chat_detail, name='chat_detail'),
+#     path('<int:chat_id>/send/', views.send_message, name='send_message'),
+# ]
+
 urlpatterns = [
-    path('<int:chat_id>/', views.chat_detail, name='chat_detail'),
-    path('<int:chat_id>/send/', views.send_message, name='send_message'),
+    path('', views.ChatListView.as_view(), name='chat_list'),
+    path('chat/<int:pk>/', views.ChatDetailView.as_view(), name='chat_detail'),
 ]

@@ -1,23 +1,26 @@
 from django.shortcuts import render
-from django.http import HttpResponse,JsonResponse
 # Create your views here.
 
-from django.shortcuts import get_object_or_404, render
-from django.contrib.auth.decorators import login_required
-from .models import Chat,Message
+from .models import Chat
+from django.views.generic import ListView, DetailView
 
-@login_required
-def chat_detail(request, chat_id):
-    chat = get_object_or_404(Chat, id=chat_id, participants=request.user)
-    messages = chat.messages.order_by('timestamp')
-    return render(request, 'chat/chat_detail.html', {'chat': chat, 'messages': messages})
+from main.utils import NavbarMixin
+# Views for chat application
 
-@login_required
-def send_message(request, chat_id):
-    if request.method == "POST":
-        chat = get_object_or_404(Chat, id=chat_id, participants=request.user)
-        content = request.POST.get("content")
-        if content:
-            message = Message.objects.create(chat=chat, sender=request.user, content=content)
-            return JsonResponse({"status": "success", "message": message.content, "timestamp": message.timestamp})
-    return JsonResponse({"status": "error", "message": "Invalid request"})
+class ChatListView(NavbarMixin,ListView):
+    model = Chat
+    template_name = 'chat/chat_list.html'
+    context_object_name = 'chats'
+
+    def get_queryset(self):
+        return self.request.user.chats.all()
+
+class ChatDetailView(NavbarMixin,DetailView):
+    model = Chat
+    template_name = 'chat/chat_detail.html'
+    context_object_name = 'chat'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['messages'] = self.object.messages.order_by('timestamp')
+        return context

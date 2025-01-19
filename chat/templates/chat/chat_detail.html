@@ -1,33 +1,40 @@
-<h1>Chat</h1>
-<div id="messages">
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Chat {{ chat.id }}</h2>
+  <ul id="messages">
     {% for message in messages %}
-        <p><strong>{{ message.sender.username }}:</strong> {{ message.content }} <em>{{ message.timestamp }}</em></p>
+      <li>{{ message.sender.username }}: {{ message.content }} ({{ message.timestamp }})</li>
     {% endfor %}
-</div>
-
-<form id="messageForm" method="post" action="{% url 'chat:send_message' chat.id %}">
-    {% csrf_token %}
-    <textarea name="content" rows="3"></textarea>
+  </ul>
+  <form id="message-form">
+    <textarea id="message-input" placeholder="Type your message..."></textarea>
     <button type="submit">Send</button>
-</form>
-
+  </form>
+{% endblock %}
+{% block script %}
 <script>
-    const form = document.getElementById('messageForm');
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-            }
-        }).then(response => response.json())
-          .then(data => {
-              if (data.status === 'success') {
-                  const messagesDiv = document.getElementById('messages');
-                  messagesDiv.innerHTML += `<p><strong>You:</strong> ${data.message} <em>${data.timestamp}</em></p>`;
-                  form.reset();
-              }
-          });
+    const chatSocket = new WebSocket(
+      'ws://' + window.location.host + '/ws/chat/{{ chat.id }}/'
+    );
+  
+    chatSocket.onmessage = function(e) {
+      const data = JSON.parse(e.data);
+      const messages = document.querySelector('#messages');
+      const message = document.createElement('li');
+      message.textContent = `${data.sender}: ${data.message} (${data.timestamp})`;
+      messages.appendChild(message);
+    };
+  
+    const form = document.querySelector('#message-form');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const input = document.querySelector('#message-input');
+      const message = input.value;
+      chatSocket.send(JSON.stringify({
+        'message': message,
+        'user_id': {{ request.user.id }}
+      }));
+      input.value = '';
     });
-</script>
+  </script>
+{% endblock %}
