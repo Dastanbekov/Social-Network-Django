@@ -13,6 +13,7 @@ from .forms import UserRegistrationForm,UserLoginForm
 from main.utils import NavbarMixin
 from .utils import AnonymousOnlyMixin, FollowMixin
 from .models import Follow
+from content.models import Post
 # Create your views here.
 
 
@@ -46,7 +47,8 @@ class UserProfileView(FollowMixin,NavbarMixin,DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.get_object()
-        
+
+        context['posts'] = Post.objects.filter(author=user, is_published=True).order_by('-created_at')
         # Получаем количество подписчиков и подписок
         context['followers_count'] = self.get_followers_count(user)
         context['following_count'] = self.get_following_count(user)

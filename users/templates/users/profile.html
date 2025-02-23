@@ -1,32 +1,66 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Профиль - MySocial{% endblock %}
+{% block title %}Профиль - {{ user.username }} | MySocial
+<link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
-<h1>Профиль пользователя {{ user.username }}</h1>
-<p>Имя пользователя: {{ user.username }}</p>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Профильная карточка -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <!-- Заголовок профиля -->
+                    <div class="d-flex align-items-center mb-4">
+                        <!-- Место для аватара -->
+                        <div class="flex-shrink-0 me-4">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" 
+                                     class="rounded-circle img-fluid" 
+                                     alt="{{ user.username }}'s Profile Picture" 
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" 
+                                     style="width: 150px; height: 150px; font-size: 48px;">
+                                    {{ user.username|first|upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!-- Информация о пользователе -->
+                        <div class="flex-grow-1">
+                            <h1 class="card-title fw-bold text-primary mb-1">{{ user.username }}</h1>
+                            <p class="text-muted mb-1">Имя пользователя: @{{ user.username }}</p>
+                            <div class="d-flex gap-3">
+                                <span class="fw-semibold">Подписчики: <span class="text-info">{{ followers_count }}</span></span>
+                                <span class="fw-semibold">Подписки: <span class="text-info">{{ following_count }}</span></span>
+                            </div>
+                        </div>
+                    </div>
 
-{% if user.profile_picture %}
-    <img src="{{ profile_user.profile_picture.url }}" alt="Profile Picture">
-{% else %}
-    <p>Профильное фото не установлено.</p>
-{% endif %}
-{% if request.user != user %}
-    <a href="">Отправить сообщение</a>
-{% endif %}
-<p>Подписчики: {{ followers_count }}</p>
-<p>Подписки: {{ following_count }}</p>
+                    <!-- Действия -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        {% if request.user != user %}
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-chat-dots me-1"></i> Отправить сообщение
+                            </a>
+                        {% endif %}
+                        {% include 'users/subscribe.html' %}
+                    </div>
 
-{% if is_following %}
-    <form action="{% url 'users:unfollow_user' username=user.username %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Отписаться</button>
-    </form>
-{% else %}
-    <form action="{% url 'users:follow_user' username=user.username %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Подписаться</button>
-    </form>
-{% endif %}
+                    <!-- Дополнительная информация -->
+                    {% if not user.profile_picture %}
+                        <p class="text-muted fst-italic">Профильное фото не установлено.</p>
+                    {% endif %}
+                    {% include 'users/partials/user_posts.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 {% endblock %}

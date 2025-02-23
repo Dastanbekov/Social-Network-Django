@@ -1,0 +1,47 @@
+{% load static %}
+
+<div class="user-posts mt-4">
+    <h3 class="fw-bold text-primary mb-3">Посты пользователя</h3>
+    {% if posts %}
+        <div class="row">
+            {% for post in posts %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <img 
+                        src="{{ post.image_url|default:'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=' }}" 
+                        class="card-img-top" 
+                        alt="{{ post.title }}"
+                        style="height: 200px; object-fit: cover;"
+                    >
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">{{ post.title }}</h5>
+                        <p class="card-text text-muted">
+                            {{ post.content|truncatewords:10 }}
+                        </p>
+                        <p class="text-muted small">Опубликовано: {{ post.created_at|date:"d M Y" }}</p>
+                        <a href="{% url 'content:post' post.slug|default:'#' %}" class="btn btn-outline-primary btn-sm stretched-link">
+                            Читать далее
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted fst-italic">У этого пользователя пока нет постов.</p>
+    {% endif %}
+</div>
+
+<style>
+    .user-posts .card {
+        border-radius: 10px;
+        transition: transform 0.2s;
+    }
+    .user-posts .card:hover {
+        transform: translateY(-5px);
+    }
+    .user-posts .btn-outline-primary {
+        border-radius: 20px;
+        padding: 5px 10px;
+    }
+</style>

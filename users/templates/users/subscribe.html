@@ -1,0 +1,11 @@
+{% if is_following %}
+    <form action="{% url 'users:unfollow_user' username=user.username %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Отписаться</button>
+    </form>
+{% else %}
+    <form action="{% url 'users:follow_user' username=user.username %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Подписаться</button>
+    </form>
+{% endif %}
